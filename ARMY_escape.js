@@ -7,8 +7,29 @@ function sleep (delay) {
 	while (new Date().getTime() < start + delay);
  }
  
- 
- 출처: https://multifrontgarden.tistory.com/157 [우리집앞마당]
+
+function calc(money, icon1, icon2, icon3, icon4)
+{
+	var temp = money
+   var chun = temp / 1000
+   temp = temp - (chun * 1000)
+   var baek = temp / 100
+   temp = temp - (baek * 100)
+   var sip = temp / 10
+   temp = temp - (sip * 10)
+   var il = temp
+
+   var firstnum = String(chun)
+   var secondnum = String(baek)
+   var thirdnum = String(sip)
+   var fourthnum = String(il)
+   var text1 = ".png"
+
+   icon1.setSprite(firstnum.concat(text1))
+   icon2.setSprite(secondnum.concat(text1))
+   icon3.setSprite(thirdnum.concat(text1))
+   icon4.setSprite(fourthnum.concat(text1))
+}
 
 //////// Game Definition
 function Game(){}
@@ -194,6 +215,29 @@ Item.member('this', function(){
 	return this.id
  })
 
+
+ /// buy BuyItem Definition
+ function BuyItem(room, name, image, price){
+	Object.call(this, room, name, image)
+	
+}
+// inherited from Object
+BuyItem.prototype = new Object()
+
+BuyItem.member('onClick', function(){
+	this.id.pick()
+	money = money - price
+	calc(money, roompx.num1, roompx.num2, roompx.num3, roompx.num4)
+	printMessage("hi")
+})
+BuyItem.member('isHanded', function(){
+	return Game.handItem() == this.id
+})
+
+BuyItem.member('this', function(){
+	return this.id
+ })
+
 playSound("frontline.wav") // 멸공의 횃불 재생
 
 room0 = new Room('room0', 'room0.png')
@@ -252,8 +296,19 @@ cookingcomplete = 0
 //cookedcombination.hide()
 
 //cookedcrispy.hide()
-
-
+var money = 9999
+roompx.num1 = new Object(roompx, 'num1' ,'9.png')
+roompx.num1.resize(50)
+roompx.num1.locate(950,600)
+roompx.num2 = new Object(roompx, 'num2' ,'9.png')
+roompx.num2.resize(50)
+roompx.num2.locate(1000,600)
+roompx.num3 = new Object(roompx, 'num3' ,'9.png')
+roompx.num3.resize(50)
+roompx.num3.locate(1050,600)
+roompx.num4 = new Object(roompx, 'num4' ,'9.png')
+roompx.num4.resize(50)
+roompx.num4.locate(1100,600)
 
 roompx.microwave = new Object(roompx, 'microwave', 'microwave(closed).png')
 roompx.microwave.resize(280)
@@ -325,14 +380,17 @@ roompx.microwave.onClick = function(){
 }
 
 roompx.redbutton.onClick = function(){
+	if (roompx.microwave.isClosed() && (roompx.sunel1.isHanded() || roompx.crispy1.isHanded() || roompx.combination1.isHanded() || roompx.gome1.isHanded())){
 	sleep(5000)
 	cookingcomplete = 1
 	printMessage("조리가 완료되었습니다")
+	}
+	else {printMessage("내용물을 넣어주세요")}
 }
 
 game.makeCombination(roompx.cookedsunel.this(), roompx.cookedcombination.this(), roompx.chickenpizza.this())
 
-roompx.sunel1 = new Item(roompx, 'sunel1','sunel.png')
+roompx.sunel1 = new BuyItem(roompx, 'sunel1','sunel.png', 2470)
 roompx.sunel1.resize(110)
 roompx.sunel1.locate(500,320)
 
@@ -344,7 +402,7 @@ roompx.sunel3 = new Object(roompx, 'sunel3','sunel.png')
 roompx.sunel3.resize(110)
 roompx.sunel3.locate(740,340)
 
-roompx.gome1 = new Item(roompx, 'gome1','gome.png')
+roompx.gome1 = new BuyItem(roompx, 'gome1','gome.png', 3430)
 roompx.gome1.resize(120)
 roompx.gome1.locate(860,195)
 
@@ -356,7 +414,7 @@ roompx.gome3 = new Object(roompx, 'gome3','gome.png')
 roompx.gome3.resize(120)
 roompx.gome3.locate(1100,205)
 
-roompx.combination1 = new Item(roompx, 'combination1','combination.png')
+roompx.combination1 = new BuyItem(roompx, 'combination1','combination.png', 2100)
 roompx.combination1.resize(110)
 roompx.combination1.locate(500,200)
 
@@ -368,7 +426,7 @@ roompx.combination3 = new Object(roompx, 'combination3','combination.png')
 roompx.combination3.resize(110)
 roompx.combination3.locate(740,205)
 
-roompx.crispy1 = new Item(roompx, 'crispy1','crispy.png')
+roompx.crispy1 = new BuyItem(roompx, 'crispy1','crispy.png', 1700)
 roompx.crispy1.resize(105)
 roompx.crispy1.locate(860,343)
 
